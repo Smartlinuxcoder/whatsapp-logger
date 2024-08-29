@@ -22,7 +22,24 @@ db.run(`
     fromNumber TEXT,
     toNumber TEXT,
     messageText TEXT,
-    timestamp TEXT
+    timestamp TEXT,
+    media TEXT,
+    mediaName TEXT,
+    mediaSize: NUM,
+    deleted: INT,
+    messageId: TEXT
+  )
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS message_edits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    messageText TEXT,
+    timestamp TEXT,
+    media TEXT,
+    mediaName TEXT,
+    mediaSize: NUM,
+    deleted: INT
   )
 `);
 
@@ -73,8 +90,8 @@ client.on('message_create', async (msg) => {
     fs.writeFileSync(path.join(__dirname, `static/attachments/${msg.id.id}.${extension}`), buffer, "binary")
 
     return db.run(
-      `INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [fromNumber, toNumber, messageText, timestamp, `/static/attachments/${msg.id.id}.${extension}`, filename, filesize],
+      `INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, messageId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [fromNumber, toNumber, messageText, timestamp, `/static/attachments/${msg.id.id}.${extension}`, filename, filesize, msg.id.id],
       function(err) {
         if (err) {
           return console.error(err.message);
@@ -86,8 +103,8 @@ client.on('message_create', async (msg) => {
 
   // Insert the message into the SQLite database
   db.run(
-    `INSERT INTO messages (fromNumber, toNumber, messageText, timestamp) VALUES (?, ?, ?, ?)`,
-    [fromNumber, toNumber, messageText, timestamp],
+    `INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, messageId) VALUES (?, ?, ?, ?, ?)`,
+    [fromNumber, toNumber, messageText, timestamp, msg.id.id],
     function(err) {
       if (err) {
         return console.error(err.message);
@@ -96,6 +113,23 @@ client.on('message_create', async (msg) => {
     }
   );
 });
+
+client.on('message_revoke_everyone', (msg) => {
+  console.log(msg)
+  // db.run(
+  //   `ALTER TABLE messages WHERE `
+  // )
+})
+
+client.on('message_edit', (msg) => {
+  const messageText = msg.body;
+  const timestamp = new Date(msg.timestamp * 1000).toISOString();
+
+  db.run(
+    `INSERT INTO message_edits (messageText, timestamp) VALUES (?, ?)`,
+    [messageText, timestamp]
+  )
+})
 
 client.initialize();
 
