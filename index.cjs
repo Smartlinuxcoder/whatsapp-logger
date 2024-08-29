@@ -27,15 +27,14 @@ db.run(`
         mediaName TEXT,
         mediaSize NUM,
         deleted INT,
-        messageId TEXT
+        messageId TEXT,
+        author TEXT
     )
 `);
 
 db.run(`
     CREATE TABLE IF NOT EXISTS message_edits (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fromNumber TEXT,
-        toNumber TEXT,
         messageText TEXT,
         timestamp TEXT,
         media TEXT,
@@ -118,6 +117,7 @@ client.on("message_create", async (msg) => {
 				filesize,
 				0,
 				msg.id.id,
+                msg.author
 			],
 			function (err) {
 				if (err) {
@@ -170,8 +170,6 @@ client.on("message_revoke_me", (msg) => {
 })
 
 client.on("message_edit", async (msg) => {
-	const fromNumber = msg.from;
-	const toNumber = msg.to;
 	const messageText = msg.body;
 	const timestamp = new Date(msg.timestamp * 1000).toISOString();
 
@@ -193,10 +191,8 @@ client.on("message_edit", async (msg) => {
 		);
 
 		return db.run(
-			"INSERT INTO message_edits (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, messageId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+			"INSERT INTO message_edits (messageText, timestamp, media, mediaName, mediaSize, messageId) VALUES (?, ?, ?, ?, ?, ?)",
 			[
-				fromNumber,
-				toNumber,
 				messageText,
 				timestamp,
 				`/static/attachments/${msg.id.id}.${extension}`,
@@ -214,10 +210,8 @@ client.on("message_edit", async (msg) => {
 	}
 
 	db.run(
-        "INSERT INTO message_edits (fromNumber, toNumber, messageText, timestamp, deleted, messageId) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO message_edits (messageText, timestamp, deleted, messageId) VALUES (?, ?, ?, ?)",
         [
-            fromNumber,
-            toNumber,
             messageText,
             timestamp,
             0,
