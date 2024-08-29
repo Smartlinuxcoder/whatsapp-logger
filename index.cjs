@@ -127,7 +127,7 @@ client.on("message_create", async (msg) => {
 				if (err) {
 					return console.error(err.message);
 				}
-				console.log(`A row has been inserted with rowid ${this.lastID}`);
+				console.log(`A row has been inserted with rowid ${this.lastID} (message received)`);
 			},
 		);
 	}
@@ -149,7 +149,7 @@ client.on("message_create", async (msg) => {
 			if (err) {
 				return console.error(err.message);
 			}
-			console.log(`A row has been inserted with rowid ${this.lastID}`);
+			console.log(`A row has been inserted with rowid ${this.lastID} (message received)`);
 		},
 	);
 });
@@ -163,7 +163,7 @@ client.on("message_revoke_everyone", (msg) => {
 			if (err) {
 				return console.error(err.message);
 			}
-			console.log(`A row has been modified with rowid ${this.lastID}`);
+			console.log(`A row has been modified with rowid ${this.lastID} (message deleted - everyone)`);
 		},
 	);
 });
@@ -177,7 +177,7 @@ client.on("message_revoke_me", (msg) => {
 			if (err) {
 				return console.error(err.message);
 			}
-			console.log(`A row has been modified with rowid ${this.lastID}`);
+			console.log(`A row has been modified with rowid ${this.lastID} (message deleted - me)`);
 		},
 	);
 })
@@ -217,24 +217,23 @@ client.on("message_edit", async (msg) => {
 				if (err) {
 					return console.error(err.message);
 				}
-				console.log(`A row has been inserted with rowid ${this.lastID}`);
+				console.log(`A row has been inserted with rowid ${this.lastID} (message edited)`);
 			},
 		);
 	}
 
 	db.run(
-        "INSERT INTO message_edits (messageText, timestamp, deleted, messageId) VALUES (?, ?, ?, ?)",
+        "INSERT INTO message_edits (messageText, timestamp, messageId) VALUES (?, ?, ?)",
         [
             messageText,
             timestamp,
-            0,
             msg.id.id,
         ],
         function (err) {
             if (err) {
                 return console.error(err.message);
             }
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
+            console.log(`A row has been inserted with rowid ${this.lastID} (message edited)`);
         },
     );
 });
