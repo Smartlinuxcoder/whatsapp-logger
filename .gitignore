@@ -1,3 +1,7 @@
+# Whatsapp Web
+whatsappAuth/
+.wwebjs_cache/
+
 # Logs
 logs
 *.log
