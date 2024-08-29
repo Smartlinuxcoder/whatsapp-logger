@@ -28,7 +28,8 @@ db.run(`
         mediaSize NUM,
         deleted INT,
         messageId TEXT,
-        author TEXT
+        author TEXT,
+        name TEXT
     )
 `);
 
@@ -106,7 +107,7 @@ client.on("message_create", async (msg) => {
 		);
 
 		return db.run(
-			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			[
 				fromNumber,
 				toNumber,
@@ -117,7 +118,8 @@ client.on("message_create", async (msg) => {
 				filesize,
 				0,
 				msg.id.id,
-                msg.author
+                msg.author,
+                msg._data.notifyName
 			],
 			function (err) {
 				if (err) {
@@ -130,8 +132,16 @@ client.on("message_create", async (msg) => {
 
 	// Insert the message into the SQLite database
 	db.run(
-		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, deleted, messageId) VALUES (?, ?, ?, ?, ?, ?)",
-		[fromNumber, toNumber, messageText, timestamp, 0, msg.id.id],
+		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, deleted, messageId, name) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		[
+            fromNumber,
+            toNumber,
+            messageText,
+            timestamp, 
+            0,
+            msg.id.id,
+            msg._data.notifyName
+        ],
 		function (err) {
 			if (err) {
 				return console.error(err.message);
