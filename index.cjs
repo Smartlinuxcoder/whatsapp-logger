@@ -81,13 +81,24 @@ client.on("message_create", async (msg) => {
 	if (msg.hasMedia) {
 		const media = await msg.downloadMedia();
 
-		const filename = media.filename;
+		const filename = media.filename || 'unknown';
 		const mimetype = media.mimetype;
 		const base64Data = media.data;
 		const filesize = media.filesize;
 		const extension = mimetypes.extension(mimetype) || "txt";
 
+        console.log(mimetype, extension)
+
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
+
+        if (!fs.existsSync(
+            path.join(__dirname, 'static/attachments')
+        )) fs.mkdirSync(
+            path.join(__dirname, 'static/attachments'),
+            {
+                recursive: true
+            }
+        )
 
 		fs.writeFileSync(
 			path.join(__dirname, `static/attachments/${msg.id.id}.${extension}`),
