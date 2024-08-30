@@ -61,7 +61,13 @@ module.exports = async (client, msg) => {
 			"binary",
 		);
 
-		if (extension === 'oga') await client.functions.ogaToMp3(filePath)
+		if (extension === 'oga') {
+			try {
+				await client.functions.ogaToMp3(filePath, filePath.replace('.oga', '.mp3'))
+			} catch(e) {
+				console.error('Error during conversion from oga to mp3: ', e);
+			}
+		}
 	}
 
 	db.run(

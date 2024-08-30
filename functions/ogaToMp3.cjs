@@ -3,9 +3,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 ffmpeg.setFfmpegPath(require('ffmpeg-static'));
 
-module.exports = async (filePath) => {
-
-    const convertOggToMp3 = (inputFile, outputFile) => {
+module.exports = async (inputFile, outputFile) => {
     return new Promise((resolve, reject) => {
         ffmpeg(inputFile)
         .output(outputFile)
@@ -19,14 +17,4 @@ module.exports = async (filePath) => {
         })
         .run();
     });
-    };
-
-    const inputPath = path.join(filePath);
-    const outputPath = path.join(filePath.replace('oga', 'mp3'));
-
-    if (fs.existsSync(inputPath)) {
-        convertOggToMp3(inputPath, outputPath)
-    } else {
-        console.error('Input file does not exist');
-    }
-}
+};
