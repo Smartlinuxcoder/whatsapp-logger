@@ -39,6 +39,8 @@ module.exports = async (client, msg) => {
 		const extension = mimetypes.extension(mimetype) || "txt";
 		const base64Data = media.data;
 
+		console.log(extension, mimetype)
+
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
 
         if (!fs.existsSync(

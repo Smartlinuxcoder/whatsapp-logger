@@ -35,7 +35,7 @@ db.run(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         messageText TEXT,
         timestamp TEXT,
-        messageId: TEXT
+        messageId TEXT
     )
 `);
 
