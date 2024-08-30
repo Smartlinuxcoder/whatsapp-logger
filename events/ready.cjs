@@ -1,7 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 
 module.exports = async (client) => {
-	const db = new sqlite3.Database('./messages.db');
+	const db = client.db;;
 
 	const myNumber = client.info.wid._serialized
 	
@@ -32,6 +32,4 @@ module.exports = async (client) => {
             }
         }
     });
-
-	db.close()
 }

@@ -1,6 +1,4 @@
 const ffmpeg = require('fluent-ffmpeg');
-const path = require('node:path');
-const fs = require('node:fs');
 ffmpeg.setFfmpegPath(require('ffmpeg-static'));
 
 module.exports = async (inputFile, outputFile) => {

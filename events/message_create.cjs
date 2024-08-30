@@ -1,10 +1,9 @@
-const sqlite3 = require("sqlite3").verbose();
 const mimetypes = require("mime-types");
 const path = require("node:path");
 const fs = require("node:fs");
 
 module.exports = async (client, msg) => {
-	const db = new sqlite3.Database('./messages.db');
+	const db = client.db;
 
 	if (msg.body === '!test') {
 		db.all("SELECT * FROM messages", [], (err, rows) => {

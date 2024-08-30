@@ -3,48 +3,9 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("node:path");
 const fs = require("node:fs");
 require("dotenv").config();
+const db = require('./data/db.cjs')
 
-const db = new sqlite3.Database("messages.db", (err) => {
-	if (err) {
-		return console.error(err.message);
-	}
-	console.log("Connected to the messages SQlite database.");
-});
 
-db.run(`
-    CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fromNumber TEXT,
-        toNumber TEXT,
-        messageText TEXT,
-        timestamp TEXT,
-        media TEXT,
-        mediaName TEXT,
-        mediaSize NUM,
-        deleted INT,
-        messageId TEXT,
-        name TEXT,
-        quotedId TEXT,
-        author TEXT,
-		fromMe BOOL,
-        groupName TEXT
-    )
-`);
-
-db.run(`
-    CREATE TABLE IF NOT EXISTS message_edits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        messageText TEXT,
-        timestamp TEXT,
-        messageId TEXT
-    )
-`);
-
-db.run(`
-    CREATE TABLE IF NOT EXISTS info (
-        myNumber TEXT PRIMARY KEY
-    )
-`);
 
 const client = new Client({
 	authStrategy: new LocalAuth({
@@ -61,19 +22,20 @@ const client = new Client({
 const functions = {}
 
 const functionsDir = fs.readdirSync(
-	path.join(__dirname, 'functions')
+	path.join(__dirname, 'data/functions')
 ).filter(file => file.endsWith('.cjs'))
 
 for (const functionFile of functionsDir) {
     const functionName = functionFile.split('.')[0]
     const functionData = require(
-		path.join(__dirname, 'functions', functionFile)
+		path.join(__dirname, 'data/functions', functionFile)
 	)
 
     functions[functionName] = functionData
 }
 
 client.functions = functions
+client.db = db
 
 const eventsDir = fs.readdirSync(
 	path.join(__dirname, 'events')

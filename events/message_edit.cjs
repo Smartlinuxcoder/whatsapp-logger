@@ -1,7 +1,6 @@
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database('./messages.db');
-
 module.exports = async (client, msg) => {
+    const db = client.db;
+
 	const messageText = msg.body;
 	const timestamp = new Date(msg.timestamp * 1000).toISOString();
     const messageId = msg.id.id

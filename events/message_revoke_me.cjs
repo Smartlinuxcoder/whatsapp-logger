@@ -1,8 +1,6 @@
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database('./messages.db');
-
 module.exports = async (client, msg) => {
-	console.log(msg);
+	const db = client.db;
+	
     const timestamp = new Date(msg.timestamp * 1000).toISOString();
 	db.run(
 		"UPDATE messages SET deleted = 1 WHERE timestamp = ?",
