@@ -143,7 +143,7 @@ client.on("message_create", async (msg) => {
             0,
             msg.id.id,
             msg._data.notifyName,
-            msg._data.quotedMsg.id.id
+            msg._data?.quotedMsg?.id?.id
         ],
 		function (err) {
 			if (err) {
