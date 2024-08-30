@@ -1,25 +1,36 @@
 // src/routes/login/+server.js
+import jwt from 'jsonwebtoken';
 import { redirect } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }) {
     const { username, password } = await request.json();
 
-    // Here you'd normally validate the user with a database
-    if (username === 'user' && password === 'pass') {
-        // Set a cookie to store the session
-        cookies.set('session_id', 'your-session-id', {
-            httpOnly: true, // Cookie cannot be accessed via JavaScript on the client side
+    const envUsername = process.env.USERNAME;
+    const envPassword = process.env.PASSWORD;
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (username === envUsername && password === envPassword) {
+        // Create a JWT token
+        const token = jwt.sign({ username }, jwtSecret, {
+            expiresIn: '1h' // Token is valid for 1 hour
+        });
+
+        // Set the token as a secure, HTTP-only cookie
+        cookies.set('token', token, {
+            httpOnly: true,
             path: '/',
-            maxAge: 60 * 60 * 24 // 1 day
+            maxAge: 60 * 60, // 1 hour
+            secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+            sameSite: 'strict'
         });
 
         throw redirect(302, '/');
+    } else {
+        return {
+            status: 401,
+            body: {
+                error: 'Invalid credentials'
+            }
+        };
     }
-
-    return {
-        status: 401,
-        body: {
-            error: 'Invalid credentials'
-        }
-    };
 }

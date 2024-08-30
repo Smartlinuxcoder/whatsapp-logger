@@ -1,9 +1,18 @@
 // src/hooks.server.js
-export async function handle({ event, resolve }) {
-    const sessionId = event.cookies.get('session_id');
+import jwt from 'jsonwebtoken';
 
-    if (sessionId) {
-        event.locals.user = { username: 'user' };
+export async function handle({ event, resolve }) {
+    const token = event.cookies.get('token');
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, jwtSecret);
+            event.locals.user = { username: decoded.username };
+        } catch (err) {
+            // Token is invalid or expired
+            event.locals.user = null;
+        }
     } else {
         event.locals.user = null;
     }
