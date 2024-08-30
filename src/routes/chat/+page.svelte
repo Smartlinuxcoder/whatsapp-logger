@@ -83,6 +83,13 @@
     .deleted-message {
         color: gray; /* Gray text color for deleted messages */
     }
+
+    video {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 5px;
+    }
 </style>
 
 <main class="flex flex-col h-screen bg-gray-100">
@@ -107,6 +114,11 @@
                                                 Your browser does not support the audio element.
                                             </audio>
                                         </div>
+                                    {:else if message.media.endsWith('.mp4')}
+                                        <video controls>
+                                            <source src={message.media} type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
                                     {:else}
                                         <img src={message.media} alt="Deleted message media" class="ml-2 max-w-[100px] rounded-lg" />
                                     {/if}
@@ -124,6 +136,11 @@
                                                 Your browser does not support the audio element.
                                             </audio>
                                         </div>
+                                    {:else if message.media.endsWith('.mp4')}
+                                        <video controls>
+                                            <source src={message.media} type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
                                     {:else}
                                         <img src={message.media} alt="Deleted message media" class="ml-2 max-w-[100px] rounded-lg" />
                                     {/if}
@@ -169,6 +186,11 @@
                                                 Your browser does not support the audio element.
                                             </audio>
                                         </div>
+                                    {:else if message.media.endsWith('.mp4')}
+                                        <video controls>
+                                            <source src={message.media} type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
                                     {:else}
                                         <img src={message.media} alt="Message media" class="ml-2 max-w-[100px] rounded-lg" />
                                     {/if}
