@@ -26,7 +26,8 @@ db.run(`
         name TEXT,
         quotedId TEXT,
         author TEXT,
-		fromMe BOOL
+		fromMe BOOL,
+        groupName TEXT
     )
 `);
 

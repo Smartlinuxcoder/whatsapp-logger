@@ -25,7 +25,14 @@ module.exports = async (client, msg) => {
 	const notifyName = msg._data.notifyName
 	const quotedId = msg._data?.quotedMsg?.id?.id
 	const fromMe = msg.id.fromMe
-
+	let groupName;
+	
+	const chatInfo = await client.getChatById(toNumber)
+	console.log(chatInfo)
+	if (chatInfo.isGroup) {
+		groupName = chatInfo.name
+	}
+	
 	let filename;
 	let filesize;
 	let dbPath;
@@ -71,7 +78,7 @@ module.exports = async (client, msg) => {
 	}
 
 	db.run(
-		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe, groupName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		[
 			fromNumber,
 			toNumber,
@@ -85,7 +92,8 @@ module.exports = async (client, msg) => {
 			messageAuthor,
 			notifyName,
 			quotedId,
-			fromMe
+			fromMe,
+			groupName
 		],
 		function (err) {
 			if (err) {
