@@ -41,15 +41,15 @@ module.exports = async (client, msg) => {
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
 
         if (!fs.existsSync(
-            path.join(__dirname, '../static/attachments')
+            path.join(__dirname, '../attachments')
         )) fs.mkdirSync(
-            path.join(__dirname, '../static/attachments'),
+            path.join(__dirname, '../attachments'),
             {
                 recursive: true
             }
         )
 
-		const filePath = path.join(__dirname, `../static/attachments/${msg.id.id}.${extension}`)
+		const filePath = path.join(__dirname, `../attachments/${msg.id.id}.${extension}`)
 		dbPath = `api/attachments/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
 
 		fs.writeFileSync(

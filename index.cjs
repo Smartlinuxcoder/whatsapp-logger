@@ -8,7 +8,7 @@ const express = require('express')
 
 const app = express()
 
-app.use('/attachments', express.static(`${__dirname}/static/attachments`))
+app.use('/attachments', express.static(`${__dirname}/attachments`))
 
 const client = new Client({
 	authStrategy: new LocalAuth({
