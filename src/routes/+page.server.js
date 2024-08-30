@@ -12,7 +12,6 @@ export async function load() {
                 reject({ message: 'Error fetching my number' });
             } else {
                 const mynumber = row.myNumber;
-                console.log('My number:', mynumber);
 
                 // Step 2: Query messages and filter out 'mynumber'
                 db.all('SELECT DISTINCT fromNumber, toNumber, fromMe, name, groupName FROM messages WHERE fromNumber IS NOT NULL', [], (err, rows) => {
