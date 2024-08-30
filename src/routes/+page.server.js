@@ -5,24 +5,46 @@ export async function load() {
     const db = new sqlite3.Database('./messages.db');
 
     return new Promise((resolve, reject) => {
-        db.all('SELECT DISTINCT fromNumber, toNumber, fromMe FROM messages WHERE fromNumber IS NOT NULL', [], (err, rows) => {
+        // Step 1: Get 'mynumber' from the 'info' table
+        db.get('SELECT myNumber FROM info', [], (err, row) => {
             if (err) {
                 console.error(err);
-                reject({ message: 'Error fetching contacts' });
+                reject({ message: 'Error fetching my number' });
             } else {
-                // Create a Set to store unique numbers
-                const uniqueNumbers = new Set();
+                const mynumber = row.myNumber;
+                console.log('My number:', mynumber);
 
-                // Loop through the rows and add each number to the Set
-                rows.forEach(row => {
-                    if (row.fromNumber && row.fromMe == 0) uniqueNumbers.add(row.fromNumber);
-                    if (row.toNumber) uniqueNumbers.add(row.toNumber);
+                // Step 2: Query messages and filter out 'mynumber'
+                db.all('SELECT DISTINCT fromNumber, toNumber, fromMe, name, groupName FROM messages WHERE fromNumber IS NOT NULL', [], (err, rows) => {
+                    if (err) {
+                        console.error(err);
+                        reject({ message: 'Error fetching contacts' });
+                    } else {
+                        // Create a Map to store unique numbers and their names
+                        const uniqueContacts = new Map();
+
+                        // Loop through the rows to populate the Map
+                        rows.forEach(row => {
+                            const { fromNumber, toNumber, fromMe, name, groupName } = row;
+
+                            // Check and add unique contacts, excluding those where mynumber matches
+                            if (fromNumber && fromMe == 0 && fromNumber !== mynumber) {
+                                const number = fromNumber.endsWith('@g.us') ? fromNumber : fromNumber;
+                                const contactName = fromNumber.endsWith('@g.us') ? groupName : name;
+                                uniqueContacts.set(number, contactName);
+                            }
+                            if (toNumber && toNumber !== mynumber) {
+                                const number = toNumber.endsWith('@g.us') ? toNumber : toNumber;
+                                const contactName = toNumber.endsWith('@g.us') ? groupName : name;
+                                uniqueContacts.set(number, contactName);
+                            }
+                        });
+
+                        // Convert the Map to an Array of arrays
+                        const contactsArray = Array.from(uniqueContacts.entries());
+                        resolve({ contacts: contactsArray, pageName: 'WhatsApp Message Logger' });
+                    }
                 });
-
-                // Convert the Set to an Array
-                const uniqueNumbersArray = Array.from(uniqueNumbers);
-
-                resolve({ contacts: uniqueNumbersArray, pageName: 'WhatsApp Message Logger' });
             }
         });
     });
