@@ -40,6 +40,12 @@ db.run(`
     )
 `);
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS info (
+        myNumber TEXT PRIMARY KEY
+    )
+`);
+
 const client = new Client({
 	authStrategy: new LocalAuth({
 		dataPath: "whatsappAuth",

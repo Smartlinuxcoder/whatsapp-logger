@@ -16,6 +16,16 @@ module.exports = async (client, msg) => {
 		});
 	}
 
+	if (msg.body === '!test2') {
+		db.all("SELECT * FROM info", [], (err, rows) => {
+			if (err) {
+				throw err;
+			}
+			// Print all fromMe values in one line
+			console.log(rows);
+		});
+	}
+
 	const fromNumber = msg.from;
 	const toNumber = msg.to;
 	const messageText = msg.body;
@@ -71,6 +81,8 @@ module.exports = async (client, msg) => {
 		if (extension === 'oga') {
 			try {
 				await client.functions.ogaToMp3(filePath, filePath.replace('.oga', '.mp3'))
+
+				fs.rmSync(filePath)
 			} catch(e) {
 				console.error('Error during conversion from oga to mp3: ', e);
 			}
