@@ -1,7 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 
 module.exports = async (client) => {
-	const db = client.db;;
+	const db = client.db;
 
 	const myNumber = client.info.wid._serialized
 	
