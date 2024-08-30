@@ -3,7 +3,7 @@ node_modules
 whatsappAuth/
 .wwebjs_cache/
 messages.db
-static/attachments
+attachments
 # Output
 .output
 .vercel

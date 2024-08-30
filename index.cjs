@@ -31,7 +31,8 @@ db.run(`
         name TEXT,
         quotedId TEXT,
         author TEXT,
-		fromMe BOOL
+		fromMe BOOL,
+		hasMedia BOOL
     )
 `);
 
@@ -47,6 +48,13 @@ db.run(`
     )
 `);
 
+db.all("SELECT * FROM messages", [], (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    // Print all fromMe values in one line
+    console.log(rows);
+});
 
 let token = null;
 
@@ -80,17 +88,25 @@ client.on("message_create", async (msg) => {
 	const toNumber = msg.to;
 	const messageText = msg.body;
 	const timestamp = new Date(msg.timestamp * 1000).toISOString();
+	const hasMedia = msg.hasMedia
+	const messageId = msg.id.id
+	const messageAuthor = msg.author
+	const notifyName = msg._data.notifyName
+	const quotedId = msg._data?.quotedMsg?.id?.id
+	const fromMe = msg.id.fromMe
+
+	let filename;
+	let filesize;
+	let filePath;
 
 	if (msg.hasMedia) {
 		const media = await msg.downloadMedia();
 
-		const filename = media.filename || 'unknown';
+		filename = media.filename || 'unknown';
+		filesize = media.filesize;
 		const mimetype = media.mimetype;
-		const base64Data = media.data;
-		const filesize = media.filesize;
 		const extension = mimetypes.extension(mimetype) || "txt";
-
-        console.log(mimetype, extension)
+		const base64Data = media.data;
 
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
 
@@ -103,53 +119,34 @@ client.on("message_create", async (msg) => {
             }
         )
 
+		filePath = path.join(__dirname, `static/attachments/${msg.id.id}.${extension}`)
+
 		fs.writeFileSync(
-			path.join(__dirname, `static/attachments/${msg.id.id}.${extension}`),
+			filePath,
 			buffer,
 			"binary",
-		);
-
-		return db.run(
-			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-			[
-				fromNumber,
-				toNumber,
-				messageText,
-				timestamp,
-				`/static/attachments/${msg.id.id}.${extension}`,
-				filename,
-				filesize,
-				0,
-				msg.id.id,
-                msg.author,
-                msg._data.notifyName,
-                msg._data.quotedMsg.id.id,
-				msg.id.fromMe
-			],
-			function (err) {
-				if (err) {
-					return console.error(err.message);
-				}
-				console.log(`A row has been inserted with rowid ${this.lastID} (message received)`);
-			},
 		);
 	}
 
 	// Insert the message into the SQLite database
 	db.run(
-		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, deleted, messageId, name, quotedId, author, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe, hasMedia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		[
-            fromNumber,
-            toNumber,
-            messageText,
-            timestamp, 
-            0,
-            msg.id.id,
-            msg._data.notifyName,
-            msg._data?.quotedMsg?.id?.id,
-			msg.author,
-			msg.id.fromMe
-        ],
+			fromNumber,
+			toNumber,
+			messageText,
+			timestamp,
+			filePath,
+			filename,
+			filesize,
+			0,
+			messageId,
+			messageAuthor,
+			notifyName,
+			quotedId,
+			fromMe,
+			hasMedia
+		],
 		function (err) {
 			if (err) {
 				return console.error(err.message);
