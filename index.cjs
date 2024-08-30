@@ -48,13 +48,13 @@ db.run(`
     )
 `);
 
-db.all("SELECT * FROM messages", [], (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    // Print all fromMe values in one line
-    console.log(rows);
-});
+// db.all("SELECT * FROM messages", [], (err, rows) => {
+//     if (err) {
+//         throw err;
+//     }
+//     // Print all fromMe values in one line
+//     console.log(rows);
+// });
 
 let token = null;
 
@@ -111,15 +111,15 @@ client.on("message_create", async (msg) => {
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
 
         if (!fs.existsSync(
-            path.join(__dirname, 'static/attachments')
+            path.join(__dirname, 'attachments')
         )) fs.mkdirSync(
-            path.join(__dirname, 'static/attachments'),
+            path.join(__dirname, 'attachments'),
             {
                 recursive: true
             }
         )
 
-		filePath = path.join(__dirname, `static/attachments/${msg.id.id}.${extension}`)
+		filePath = path.join(__dirname, `attachments/${msg.id.id}.${extension}`)
 
 		fs.writeFileSync(
 			filePath,
