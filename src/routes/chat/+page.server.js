@@ -10,7 +10,7 @@ import sqlite3 from 'sqlite3';
                     console.error(err);
                     reject({ message: 'Error fetching messages' });
                 } else {
-                    resolve({messages: rows, pageName: contact});
+                    resolve({messages: rows, pageName: 'Chat with ' + contact});
                 }
             });
         });
