@@ -4,8 +4,11 @@ const path = require("node:path");
 const fs = require("node:fs");
 require("dotenv").config();
 const db = require('./data/db.cjs')
+const express = require('express')
 
+const app = express()
 
+app.use('/attachments', express.static(`${__dirname}/static/attachments`))
 
 const client = new Client({
 	authStrategy: new LocalAuth({
@@ -63,3 +66,7 @@ process.on("SIGINT", () => {
 		process.exit(0);
 	});
 });
+
+app.listen(1235, () => {
+	console.log("The attachments web page is online on port 1235")
+})
