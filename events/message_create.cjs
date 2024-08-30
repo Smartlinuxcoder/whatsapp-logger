@@ -50,7 +50,7 @@ module.exports = async (client, msg) => {
         )
 
 		const filePath = path.join(__dirname, `../attachments/${msg.id.id}.${extension}`)
-		dbPath = `http://84.247.172.214:1235/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
+		dbPath = `http://84.247.172.214:1235/attachments/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
 
 		fs.writeFileSync(
 			filePath,
