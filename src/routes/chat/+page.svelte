@@ -84,6 +84,13 @@
         color: gray; /* Gray text color for deleted messages */
     }
 
+    .forwarded-label {
+        font-size: 0.8rem;
+        color: #555;
+        font-style: italic;
+        margin-bottom: 4px;
+    }
+
     video {
         max-width: 100%;
         height: auto;
@@ -147,6 +154,10 @@
                                 {/if}
                             </div>
                         {:else}
+                            {#if message.forwarded === 1}
+                                <div class="forwarded-label">Forwarded</div>
+                            {/if}
+
                             {#if message.quotedId}
                                 {#each data.messages as quotedMessage (quotedMessage.messageId)}
                                     {#if quotedMessage.messageId === message.quotedId}
