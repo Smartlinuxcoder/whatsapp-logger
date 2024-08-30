@@ -4,6 +4,7 @@ whatsappAuth/
 .wwebjs_cache/
 messages.db
 attachments
+package-lock.json
 # Output
 .output
 .vercel
