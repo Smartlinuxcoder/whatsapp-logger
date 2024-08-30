@@ -31,7 +31,7 @@ db.run(`
         name TEXT,
         quotedId TEXT,
         author TEXT,
-		fromMe BOOl
+		fromMe BOOL
     )
 `);
 
@@ -46,6 +46,14 @@ db.run(`
         messageId TEXT
     )
 `);
+
+db.all("SELECT * FROM messages", [], (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    // Print all fromMe values in one line
+    console.log(rows);
+});
 
 let token = null;
 
@@ -73,7 +81,7 @@ client.on("ready", () => {
 
 // Respond to messages and log them to the database
 client.on("message_create", async (msg) => {
-	console.log(msg._data?.quotedMsg?.id?.id);
+	console.log(msg.id.fromMe);
 
 	const fromNumber = msg.from;
 	const toNumber = msg.to;
@@ -109,7 +117,7 @@ client.on("message_create", async (msg) => {
 		);
 
 		return db.run(
-			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, name, quotedId, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			[
 				fromNumber,
 				toNumber,
@@ -136,7 +144,7 @@ client.on("message_create", async (msg) => {
 
 	// Insert the message into the SQLite database
 	db.run(
-		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, deleted, messageId, name, quotedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, deleted, messageId, name, quotedId, author, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		[
             fromNumber,
             toNumber,
@@ -145,7 +153,9 @@ client.on("message_create", async (msg) => {
             0,
             msg.id.id,
             msg._data.notifyName,
-            msg._data?.quotedMsg?.id?.id
+            msg._data?.quotedMsg?.id?.id,
+			msg.author,
+			msg.id.fromMe
         ],
 		function (err) {
 			if (err) {
