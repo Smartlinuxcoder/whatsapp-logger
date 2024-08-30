@@ -5,26 +5,6 @@ const fs = require("node:fs");
 module.exports = async (client, msg) => {
 	const db = client.db;
 
-	if (msg.body === '!test') {
-		db.all("SELECT * FROM messages", [], (err, rows) => {
-			if (err) {
-				throw err;
-			}
-			// Print all fromMe values in one line
-			console.log(rows);
-		});
-	}
-
-	if (msg.body === '!test2') {
-		db.all("SELECT * FROM info", [], (err, rows) => {
-			if (err) {
-				throw err;
-			}
-			// Print all fromMe values in one line
-			console.log(rows);
-		});
-	}
-
 	const fromNumber = msg.from;
 	const toNumber = msg.to;
 	const messageText = msg.body;
@@ -34,6 +14,7 @@ module.exports = async (client, msg) => {
 	const notifyName = msg._data.notifyName
 	const quotedId = msg._data?.quotedMsg?.id?.id
 	const fromMe = msg.id.fromMe
+	const isForwarded = msg.isForwarded
 	let groupName;
 	
 	const chatInfo = await client.getChatById(toNumber)
@@ -89,7 +70,7 @@ module.exports = async (client, msg) => {
 	}
 
 	db.run(
-		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe, groupName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, author, name, quotedId, fromMe, groupName, forwarded) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		[
 			fromNumber,
 			toNumber,
@@ -104,7 +85,8 @@ module.exports = async (client, msg) => {
 			notifyName,
 			quotedId,
 			fromMe,
-			groupName
+			groupName,
+			isForwarded
 		],
 		function (err) {
 			if (err) {

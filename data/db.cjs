@@ -20,7 +20,8 @@ db.serialize(() => {
             quotedId TEXT,
             author TEXT,
             fromMe BOOL,
-            groupName TEXT
+            groupName TEXT,
+            forwarded BOOL
         )
     `);
     
