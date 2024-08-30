@@ -15,7 +15,6 @@ export async function load() {
 
                 // Loop through the rows and add each number to the Set
                 rows.forEach(row => {
-                    console.log(row.fromMe)
                     if (row.fromNumber && row.fromMe == 0) uniqueNumbers.add(row.fromNumber);
                     if (row.toNumber) uniqueNumbers.add(row.toNumber);
                 });

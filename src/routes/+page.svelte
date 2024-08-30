@@ -27,7 +27,7 @@
     {#if data.contacts.length > 0}
         {#each data.contacts as contact}
             <div class="contact" on:click={() => openChat(contact)}>
-                {contact} {contact.endsWith('g.us') ? '(Group)' : '(Contact)'}
+                {contact.slice(0, -5)} {contact.endsWith('g.us') ? '(Group)' : '(Contact)'}
             </div>
         {/each}
     {:else}
