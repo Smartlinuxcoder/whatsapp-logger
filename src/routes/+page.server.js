@@ -41,6 +41,7 @@ export async function load() {
 
                         // Convert the Map to an Array of arrays
                         const contactsArray = Array.from(uniqueContacts.entries());
+                        console.log(contactsArray);
                         resolve({ contacts: contactsArray, pageName: 'WhatsApp Message Logger' });
                     }
                 });
