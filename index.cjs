@@ -11,12 +11,12 @@ const client = new Client({
 	authStrategy: new LocalAuth({
 		dataPath: "whatsappAuth",
 	}),
-	// puppeteer: {
-    //     args: [
-    //         '--no-sandbox',
-    //         '--disable-setuid-sandbox'
-    //     ]
-    // }
+	puppeteer: {
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox'
+		]
+	}
 });
 
 const functions = {}
@@ -26,12 +26,12 @@ const functionsDir = fs.readdirSync(
 ).filter(file => file.endsWith('.cjs'))
 
 for (const functionFile of functionsDir) {
-    const functionName = functionFile.split('.')[0]
-    const functionData = require(
+	const functionName = functionFile.split('.')[0]
+	const functionData = require(
 		path.join(__dirname, 'data/functions', functionFile)
 	)
 
-    functions[functionName] = functionData
+	functions[functionName] = functionData
 }
 
 client.functions = functions
@@ -49,7 +49,7 @@ for (const eventFile of eventsDir) {
 
 	client.on(eventName, eventData.bind(null, client))
 
-    console.log(`Successfully loaded the event "${eventName}"`)
+	console.log(`Successfully loaded the event "${eventName}"`)
 }
 
 client.initialize();
