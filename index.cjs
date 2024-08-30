@@ -72,7 +72,7 @@ client.on("ready", () => {
 
 // Respond to messages and log them to the database
 client.on("message_create", async (msg) => {
-	console.log(msg._data.quotedMsg.id.id);
+	console.log(msg._data?.quotedMsg?.id?.id);
 
 	const fromNumber = msg.from;
 	const toNumber = msg.to;
@@ -155,10 +155,11 @@ client.on("message_create", async (msg) => {
 });
 
 client.on("message_revoke_everyone", (msg) => {
+	const timestamp = new Date(msg.timestamp * 1000).toISOString();
 	console.log(msg);
 	db.run(
-		"UPDATE messages SET deleted = 2 WHERE messageId = ?",
-		[msg.id.id],
+		"UPDATE messages SET deleted = 2 WHERE timestamp = ?",
+		[timestamp],
 		function (err) {
 			if (err) {
 				return console.error(err.message);
@@ -169,15 +170,16 @@ client.on("message_revoke_everyone", (msg) => {
 });
 
 client.on("message_revoke_me", (msg) => {
-    console.log(msg);
+	console.log(msg);
+    const timestamp = new Date(msg.timestamp * 1000).toISOString();
 	db.run(
-		"UPDATE messages SET deleted = 1 WHERE messageId = ?",
-		[msg.id.id],
+		"UPDATE messages SET deleted = 1 WHERE timestamp = ?",
+		[timestamp],
 		function (err) {
 			if (err) {
 				return console.error(err.message);
 			}
-			console.log(`A row has been modified with rowid ${this.lastID} (message deleted - me)`);
+			console.log(`A row has been modified with rowid ${this.lastID} (message deleted - everyone)`);
 		},
 	);
 })
