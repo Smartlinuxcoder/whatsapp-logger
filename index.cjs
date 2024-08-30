@@ -35,10 +35,7 @@ db.run(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         messageText TEXT,
         timestamp TEXT,
-        media TEXT,
-        mediaName TEXT,
-        mediaSize NUM,
-        messageId TEXT
+        messageId: TEXT
     )
 `);
 
