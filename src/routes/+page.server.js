@@ -1,7 +1,10 @@
 import sqlite3 from 'sqlite3';
-
-export async function load() {
+import { redirect } from '@sveltejs/kit';
+export async function load({ locals }) {
     // Connect to the SQLite database
+    if (!locals.user) {
+        throw redirect(302, '/login');
+    }
     const db = new sqlite3.Database('./messages.db');
 
     return new Promise((resolve, reject) => {

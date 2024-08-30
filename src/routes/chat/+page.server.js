@@ -1,6 +1,9 @@
 import sqlite3 from 'sqlite3';
-
-export async function load({ url }) {
+import { redirect } from '@sveltejs/kit';
+export async function load({ url, locals}) {
+    if (!locals.user) {
+        throw redirect(302, '/login');
+    }
     const contact = url.searchParams.get('contact'); // Get the contact from query parameters
     const db = new sqlite3.Database('./messages.db');
 
