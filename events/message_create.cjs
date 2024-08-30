@@ -53,13 +53,15 @@ module.exports = async (client, msg) => {
         )
 
 		const filePath = path.join(__dirname, `../static/attachments/${msg.id.id}.${extension}`)
-		dbPath = `/attachments/${msg.id.id}.${extension}`
+		dbPath = `/attachments/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
 
 		fs.writeFileSync(
 			filePath,
 			buffer,
 			"binary",
 		);
+
+		if (extension === 'oga') await client.functions.ogaToMp3(filePath)
 	}
 
 	db.run(

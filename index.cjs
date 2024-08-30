@@ -51,6 +51,23 @@ const client = new Client({
     // }
 });
 
+const functions = {}
+
+const functionsDir = fs.readdirSync(
+	path.join(__dirname, 'functions')
+).filter(file => file.endsWith('.cjs'))
+
+for (const functionFile of functionsDir) {
+    const functionName = functionFile.split('.')[0]
+    const functionData = require(
+		path.join(__dirname, 'functions', functionFile)
+	)
+
+    functions[functionName] = functionData
+}
+
+client.functions = functions
+
 const eventsDir = fs.readdirSync(
 	path.join(__dirname, 'events')
 ).filter(file => file.endsWith('.cjs'))
