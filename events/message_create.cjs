@@ -28,7 +28,7 @@ module.exports = async (client, msg) => {
 	let groupName;
 	
 	const chatInfo = await client.getChatById(toNumber)
-	console.log(chatInfo)
+	
 	if (chatInfo.isGroup) {
 		groupName = chatInfo.name
 	}
