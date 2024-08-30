@@ -47,13 +47,6 @@ db.run(`
     )
 `);
 
-db.all("SELECT * FROM messages", [], (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    // Print all fromMe values in one line
-    console.log(rows);
-});
 
 let token = null;
 

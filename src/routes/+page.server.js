@@ -5,7 +5,7 @@ export async function load() {
     const db = new sqlite3.Database('./messages.db');
 
     return new Promise((resolve, reject) => {
-        db.all('SELECT DISTINCT fromNumber, toNumber FROM messages WHERE fromNumber IS NOT NULL', [], (err, rows) => {
+        db.all('SELECT DISTINCT fromNumber, toNumber, fromMe FROM messages WHERE fromNumber IS NOT NULL', [], (err, rows) => {
             if (err) {
                 console.error(err);
                 reject({ message: 'Error fetching contacts' });
@@ -15,8 +15,9 @@ export async function load() {
 
                 // Loop through the rows and add each number to the Set
                 rows.forEach(row => {
-                    if (row.fromNumber) uniqueNumbers.add(row.fromNumber);
-                    if (row.toNumber && row.fromMe == false) uniqueNumbers.add(row.toNumber);
+                    console.log(row.fromMe)
+                    if (row.fromNumber && row.fromMe == 0) uniqueNumbers.add(row.fromNumber);
+                    if (row.toNumber) uniqueNumbers.add(row.toNumber);
                 });
 
                 // Convert the Set to an Array
