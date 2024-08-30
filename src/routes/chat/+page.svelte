@@ -1,6 +1,5 @@
-<!-- src/routes/chat/+page.svelte -->
-
 <script>
+    import { onMount } from 'svelte';
     export let data = [];
     
     // Function to format timestamp
@@ -8,16 +7,27 @@
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
+
+    let messagesContainer;
+
+    // Scroll to the bottom of the messages
+    const scrollToBottom = () => {
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    };
+    onMount(scrollToBottom);
+    // Run scrollToBottom whenever messages change
+    $: if (data.messages.length) {
+        scrollToBottom();
+    }
 </script>
 
 <style>
 </style>
 
 <main class="flex flex-col h-screen bg-gray-100">
-    <div class="bg-[#075e54] text-white text-center p-4 text-xl">
-        Chat with {data.pageName}
-    </div>
-    <div class="flex-1 p-4 overflow-y-auto">
+    <div bind:this={messagesContainer} class="flex-1 p-4 overflow-y-auto">
         {#if data.loading}
             <div class="text-center italic">Loading messages...</div>
         {:else if data.error}

@@ -22,7 +22,6 @@ export async function load() {
                 // Convert the Set to an Array
                 const uniqueNumbersArray = Array.from(uniqueNumbers);
 
-                console.log(uniqueNumbersArray);
                 resolve({ contacts: uniqueNumbersArray, pageName: 'WhatsApp Message Logger' });
             }
         });
