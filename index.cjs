@@ -30,7 +30,8 @@ db.run(`
         messageId TEXT,
         name TEXT,
         quotedId TEXT,
-        author TEXT
+        author TEXT,
+		fromMe BOOl
     )
 `);
 
@@ -108,7 +109,7 @@ client.on("message_create", async (msg) => {
 		);
 
 		return db.run(
-			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, name, quotedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			"INSERT INTO messages (fromNumber, toNumber, messageText, timestamp, media, mediaName, mediaSize, deleted, messageId, name, quotedId, fromMe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			[
 				fromNumber,
 				toNumber,
@@ -121,7 +122,8 @@ client.on("message_create", async (msg) => {
 				msg.id.id,
                 msg.author,
                 msg._data.notifyName,
-                msg._data.quotedMsg.id.id
+                msg._data.quotedMsg.id.id,
+				msg.id.fromMe
 			],
 			function (err) {
 				if (err) {
