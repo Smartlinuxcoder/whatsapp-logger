@@ -6,6 +6,16 @@ const fs = require("node:fs");
 module.exports = async (client, msg) => {
 	const db = new sqlite3.Database('./messages.db');
 
+	if (msg.body === '!test') {
+		db.all("SELECT * FROM messages", [], (err, rows) => {
+			if (err) {
+				throw err;
+			}
+			// Print all fromMe values in one line
+			console.log(rows);
+		});
+	}
+
 	const fromNumber = msg.from;
 	const toNumber = msg.to;
 	const messageText = msg.body;
