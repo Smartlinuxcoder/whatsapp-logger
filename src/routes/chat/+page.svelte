@@ -16,8 +16,12 @@
 <main>
     {#if data.messages.length > 0}
         {#each data.messages as message}
-            <div class="message">
-                <strong>{message.fromNumber === data.pageName ? 'Me' : data.pageName}:</strong> {message.messageText}
+            <div class="message flex justify-between items-center">
+                <div class="flex">
+                    <strong class="mr-2">{message.name}:</strong> 
+                    <span>{message.messageText}</span>
+                </div>
+                <div class="text-right">{message.timestamp}</div>
             </div>
         {/each}
     {:else}

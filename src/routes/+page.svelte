@@ -6,7 +6,8 @@
     // Function to handle opening the chat with the selected contact
     function openChat(contact) {
         // Redirect to /chat with the contact as a query parameter
-        window.location.href = `/chat?contact=${encodeURIComponent(contact.fromNumber)}`;
+        
+        window.location.href = `/chat?contact=${encodeURIComponent(contact)}`;
     }
 </script>
 
@@ -25,7 +26,9 @@
 <main>
     {#if data.contacts.length > 0}
         {#each data.contacts as contact}
-            <div class="contact" on:click={() => openChat(contact)}>{contact.fromNumber}</div>
+            <div class="contact" on:click={() => openChat(contact)}>
+                {contact} {contact.endsWith('g.us') ? '(Group)' : '(Contact)'}
+            </div>
         {/each}
     {:else}
         <div>No contacts found.</div>

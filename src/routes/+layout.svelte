@@ -18,7 +18,7 @@
     
     <slot />
   </div>
-  <div class="footer">
+  <!-- <div class="footer">
     <div class="text-center text-sm text-gray-600">
       Copyright &copy; 2024 <a
         href="https://smartlinux.xyz"
@@ -27,7 +27,7 @@
         class="text-blue-600 hover:underline">Smartlinux.xyz</a
       >. All rights reserved.
     </div>
-  </div>
+  </div> -->
   
   <style>
     .footer {
