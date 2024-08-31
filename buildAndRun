@@ -7,7 +7,7 @@ LOGGER_PID=""
 # Function to build the Svelte app
 build_app() {
     echo "Building the Svelte app..."
-    npm run build
+    npm run build > build.log 2>&1
     if [ $? -ne 0 ]; then
         echo "Build failed. Exiting."
         exit 1
@@ -17,7 +17,7 @@ build_app() {
 # Function to run the Svelte app
 run_svelte_app() {
     echo "Running the Svelte app..."
-    PORT=1234 node -r dotenv/config build/index.js > ui.log &
+    PORT=1234 node -r dotenv/config build/index.js > ui.log 2>&1 &
     NODE_PID=$!
     echo "Svelte app is running on PORT 1234 with PID $NODE_PID"
 }
@@ -25,7 +25,7 @@ run_svelte_app() {
 # Function to run the logger
 run_logger() {
     echo "Running the logger..."
-    node index.cjs > logger.log &
+    node index.cjs > logger.log 2>&1 &
     LOGGER_PID=$!
     echo "Logger is running with PID $LOGGER_PID"
 }
