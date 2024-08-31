@@ -38,8 +38,6 @@ module.exports = async (client, msg) => {
 		const extension = mimetypes.extension(mimetype) || "txt";
 		const base64Data = media.data;
 
-		console.log(extension, mimetype)
-
 		const buffer = Buffer.from(base64Data, "base64").toString("binary");
 
         if (!fs.existsSync(
@@ -52,7 +50,13 @@ module.exports = async (client, msg) => {
         )
 
 		const filePath = path.join(__dirname, `../attachments/${msg.id.id}.${extension}`)
-		dbPath = `https://static.smartlinux.xyz/attachments/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
+
+		const secure = process.env.SECURE === "true"
+		const keepPort = process.env.KEEP_PORT === "true"
+		const port = process.env.PORT
+		const hostname = process.env.HOSTNAME
+
+		dbPath = `http${secure ? 's' : ''}://${hostname}${keepPort ? `:${port}` : ''}/attachments/${msg.id.id}.${extension === 'oga' ? 'mp3' : extension}`
 
 		fs.writeFileSync(
 			filePath,
