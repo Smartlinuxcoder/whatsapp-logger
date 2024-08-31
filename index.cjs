@@ -67,6 +67,6 @@ process.on("SIGINT", () => {
 	});
 });
 
-app.listen(1235, () => {
-	console.log("The attachments web page is online on port 1235")
+app.listen(process.env.PORT || 1235, () => {
+	console.log(`The attachments web page is online on port ${process.env.PORT || '1235'}`)
 })
