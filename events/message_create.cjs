@@ -16,6 +16,8 @@ module.exports = async (client, msg) => {
 	const fromMe = msg.id.fromMe
 	const isForwarded = msg.isForwarded
 	let groupName;
+
+	if (fromNumber.endsWith('@newsletter')) return;
 	
 	const chatInfo = await client.getChatById(toNumber)
 	

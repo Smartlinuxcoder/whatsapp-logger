@@ -1,7 +1,10 @@
 module.exports = async (client, msg) => {
 	const db = client.db;
 
+	const fromNumber = msg.from
 	const timestamp = new Date(msg.timestamp * 1000).toISOString();
+	
+	if (fromNumber.endsWith('@newsletter')) return;
 	
 	db.run(
 		"UPDATE messages SET deleted = 2 WHERE timestamp = ?",

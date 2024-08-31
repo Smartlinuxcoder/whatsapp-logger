@@ -1,9 +1,12 @@
 module.exports = async (client, msg) => {
     const db = client.db;
 
+    const fromNumber = msg.from
 	const messageText = msg.body;
 	const timestamp = new Date(msg.timestamp * 1000).toISOString();
     const messageId = msg.id.id
+
+    if (fromNumber.endsWith('@newsletter')) return;
 
 	db.run(
         "INSERT INTO message_edits (messageText, timestamp, messageId) VALUES (?, ?, ?)",
