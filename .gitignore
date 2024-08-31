@@ -5,6 +5,9 @@ whatsappAuth/
 messages.db
 attachments
 package-lock.json
+.pki
+core.*
+start.sh
 
 logger.log
 ui.log
@@ -28,3 +31,11 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Git
+.gitconfig
+.git-credentials
+
+# Npm
+.cache
+.npm
