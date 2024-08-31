@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# Variables to track PIDs
+NODE_PID=""
+LOGGER_PID=""
+
+# Function to build the Svelte app
+build_app() {
+    echo "Building the Svelte app..."
+    npm run build
+    if [ $? -ne 0 ]; then
+        echo "Build failed. Exiting."
+        exit 1
+    fi
+}
+
+# Function to run the Svelte app
+run_svelte_app() {
+    echo "Running the Svelte app..."
+    PORT=1234 node -r dotenv/config build/index.js > ui.log &
+    NODE_PID=$!
+    echo "Svelte app is running on PORT 1234 with PID $NODE_PID"
+}
+
+# Function to run the logger
+run_logger() {
+    echo "Running the logger..."
+    node index.cjs > logger.log &
+    LOGGER_PID=$!
+    echo "Logger is running with PID $LOGGER_PID"
+}
+
+# Function to stop the Svelte app
+stop_svelte_app() {
+    if [ -n "$NODE_PID" ]; then
+        echo "Stopping the Svelte app with PID $NODE_PID..."
+        kill $NODE_PID
+        wait $NODE_PID 2>/dev/null
+        echo "Svelte app stopped."
+        NODE_PID=""
+    else
+        echo "Svelte app is not running."
+    fi
+}
+
+# Function to stop the logger
+stop_logger() {
+    if [ -n "$LOGGER_PID" ]; then
+        echo "Stopping the logger with PID $LOGGER_PID..."
+        kill $LOGGER_PID
+        wait $LOGGER_PID 2>/dev/null
+        echo "Logger stopped."
+        LOGGER_PID=""
+    else
+        echo "Logger is not running."
+    fi
+}
+
+# Function to get the status of the Svelte app
+get_svelte_status() {
+    if [ -n "$NODE_PID" ] && ps -p $NODE_PID > /dev/null; then
+        echo "Running (PID $NODE_PID)"
+    else
+        echo "Stopped"
+    fi
+}
+
+# Function to get the status of the logger
+get_logger_status() {
+    if [ -n "$LOGGER_PID" ] && ps -p $LOGGER_PID > /dev/null; then
+        echo "Running (PID $LOGGER_PID)"
+    else
+        echo "Stopped"
+    fi
+}
+
+# Function to show the menu with the status of each service
+show_menu() {
+    while true; do
+        SVELTE_STATUS=$(get_svelte_status)
+        LOGGER_STATUS=$(get_logger_status)
+        
+        CHOICE=$(whiptail --title "Service Control Menu" --menu "Choose an action:" 20 70 10 \
+            "1" "Start Svelte App (Current Status: $SVELTE_STATUS)" \
+            "2" "Stop Svelte App (Current Status: $SVELTE_STATUS)" \
+            "3" "Restart Svelte App (Current Status: $SVELTE_STATUS)" \
+            "4" "Start Logger (Current Status: $LOGGER_STATUS)" \
+            "5" "Stop Logger (Current Status: $LOGGER_STATUS)" \
+            "6" "Restart Logger (Current Status: $LOGGER_STATUS)" 3>&2 2>&1 1>&3)
+
+        case $CHOICE in
+            1)
+                run_svelte_app
+                ;;
+            2)
+                stop_svelte_app
+                ;;
+            3)
+                stop_svelte_app
+                run_svelte_app
+                ;;
+            4)
+                run_logger
+                ;;
+            5)
+                stop_logger
+                ;;
+            6)
+                stop_logger
+                run_logger
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+}
+
+# Main script execution
+build_app
+show_menu

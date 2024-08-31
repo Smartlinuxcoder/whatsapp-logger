@@ -24,13 +24,16 @@ export async function POST({ request, cookies }) {
             sameSite: 'strict'
         });
 
+        // Redirect to the home page or a protected route
         throw redirect(302, '/');
     } else {
-        return {
-            status: 401,
-            body: {
-                error: 'Invalid credentials'
+        // Return a proper Response object for invalid credentials
+        return new Response(
+            JSON.stringify({ error: 'Invalid credentials' }),
+            {
+                status: 401,
+                headers: { 'Content-Type': 'application/json' }
             }
-        };
+        );
     }
 }

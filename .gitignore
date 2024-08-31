@@ -5,6 +5,10 @@ whatsappAuth/
 messages.db
 attachments
 package-lock.json
+
+logger.log
+ui.log
+
 # Output
 .output
 .vercel
